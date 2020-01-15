@@ -30,7 +30,7 @@ class VersePolicy
      */
     public function view(User $user, Verse $verse)
     {
-        //
+        return $user->id === $verse->user_id;
     }
 
     /**
@@ -53,7 +53,7 @@ class VersePolicy
      */
     public function update(User $user, Verse $verse)
     {
-        //
+        return $user->id === $verse->user_id;
     }
 
     /**
@@ -65,7 +65,7 @@ class VersePolicy
      */
     public function delete(User $user, Verse $verse)
     {
-        //
+        return $user->id === $verse->user_id;
     }
 
     /**
@@ -77,7 +77,7 @@ class VersePolicy
      */
     public function restore(User $user, Verse $verse)
     {
-        //
+        return $user->id === $verse->user_id;
     }
 
     /**
@@ -89,6 +89,6 @@ class VersePolicy
      */
     public function forceDelete(User $user, Verse $verse)
     {
-        //
+        return $user->id === $verse->user_id;
     }
 }
