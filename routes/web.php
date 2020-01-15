@@ -12,7 +12,8 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $verses = \App\Verse::all();
+    return view('welcome', ['verses' => $verses]);
 });
 
 Auth::routes();

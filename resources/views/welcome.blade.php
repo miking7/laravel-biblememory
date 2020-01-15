@@ -85,6 +85,12 @@
                 </div>
 
                 <div class="links">
+                    @foreach ($verses as $verse)
+                        <p>{{ $verse->id }} {{ $verse->user_id }} {{ $verse->reference }}</p>
+                    @endforeach
+                </div>
+
+                <div class="links">
                     <a href="https://laravel.com/docs">Docs</a>
                     <a href="https://laracasts.com">Laracasts</a>
                     <a href="https://laravel-news.com">News</a>
