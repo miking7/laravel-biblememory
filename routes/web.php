@@ -14,7 +14,8 @@
 Auth::routes();
 
 Route::get('/', function () {
-    return view('biblememory');
+    $verses = Auth::user()->verses;
+    return view('biblememory', ['verses' => $verses]);
 });
 
 Route::get('/home', 'HomeController@index')->name('home');

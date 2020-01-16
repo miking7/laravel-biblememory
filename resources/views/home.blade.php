@@ -19,6 +19,9 @@
                             <p>{{ $verse->id }} {{ $verse->user_id }} {{ $verse->reference }}</p>
                         @endforeach
                     </div>
+                    <div>
+                        {{ json_encode($verses) }}
+                    </div>
 
                 </div>
             </div>

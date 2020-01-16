@@ -73,7 +73,7 @@
 // text/cache-manifest			manifest
 
 
-var allVerses = [];
+var allVerses = {!! json_encode($verses) !!};
 var verses = [];
 
 //Define context classes
@@ -151,22 +151,8 @@ $(document).ready(function() {
 		'c':          function () { $('head').append('<link rel="stylesheet" href="css/index.iphone.css" type="text/css" />'); },
 		'v':          function () { $('head').append('<link rel="stylesheet" href="css/index.firefox.css" type="text/css" />'); }
 	});
-	//Login or load verses
-	if (getUserID() == null) {
-		context.setMode("login");
-		refreshPage();
-	} else {
-		context.setMode("loading");
-		refreshPage();
-		success = false;
-// 		success = dataLocalLoad();
-// 		if (!success)
-			dataRemoteLoad(); 
-		
-		context.setMode("mainmenu");
-		refreshPage();
-// 		loadVerses();
-	}
+    context.setMode("mainmenu");
+    refreshPage();
 });
 
 // http://www.hand-interactive.com/resources/detect-mobile-javascript.htm
@@ -194,23 +180,6 @@ function mobileBrowser() {
 }
 
 
-function loadVerses() {
-	$.getJSON('http://brightangel7.com/biblememory/json.php', {userid:getUserID()}, function(data) {
-		allVerses = data;
-		for (var i=0; i<allVerses.length; i=i+1) {
-			var t = allVerses[i].content;
-			if (t == null) {
-				t = '';
-				allVerses[i].content = t;
-			}
-		}
-// 		selectAllVerses();
-		selectRandomVerses();
-		//startReview();
-		showVerseList();
-	});
-};
-
 function selectAllVerses() {
 	verses = allVerses.slice();	//Create a (shallow) clone of the allVerses array
 }
@@ -219,8 +188,10 @@ function selectRandomVerses() {
 	verses = []
 	for (var i=0; i<allVerses.length; i=i+1) {
 		var freq = allVerses[i].review_cat;
-		if (freq == 'auto')
-			freq = autoReviewFreq(allVerses[i].started_days);
+		if (freq == 'auto') {
+            var started_days = calcStartedDays(allVerses[i].started_at);
+			freq = autoReviewFreq(started_days);
+        }
 		if ((freq == "l") || (freq == "d"))
 			verses.push(allVerses[i]);
 		if (freq == "w") {
@@ -233,12 +204,6 @@ function selectRandomVerses() {
 		}
 
 	}
-}
-
-function dataRemoteLoad() {
-	context.setMode("loading");
-	refreshPage();
-	loadVerses();
 }
 
 function dataLocalLoad() {
@@ -293,27 +258,8 @@ function showVerseList() {
 	setTimeout(function(){ refreshPage(); }, 200);
 }
 
-function login() {
-	var userid = $('input:input[name=userid]').val();
-	if (userid.length > 0) {
-		$.cookie('userid', userid, { expires: 365 });
-		context.setMode("loading");
-		refreshPage();
-		loadVerses();
-	}
-}
-
 function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
-}
-
-function getUserID() {
-	var userid = $.cookie('userid');
-	if (isNumber(userid)) {						//if valid, re-write the cookie to update the date
-//		$.cookie('userid', null);
-		$.cookie('userid', userid, { expires: 365 });
-	}
-	return userid;
 }
 
 //converts simple '\r\n' or '\n' text to html paragraphs
@@ -402,16 +348,6 @@ function refreshPage() {
 					refreshPage();
 				}
 			},
-			'logout': function(t) {
-				if (confirm('About to log out - are you sure?') == true) {
-					$.cookie('userid', null);
-					context.pop();
-					context.pop();
-					context.pop();
-					context.setMode("login");
-					refreshPage();
-				}
-			},
 			'lookupchapter': function(t) {
 				chapter = cv.reference.replace(/:.+/, "");
 				window.open('http://mobile.biblegateway.com/passage/index.php?version=KJV&search=' + chapter);
@@ -485,9 +421,6 @@ function refreshPage() {
 		}
 // 		$('#verselist').html(html);
 	}
-	if (context.current.mode == 'login') {
-		$('#master').empty().append( $('#tLogin').clone() );
-	}
 	if (context.current.mode == 'remindermeditate') {
 		$('#master').empty().append( $('#tReminderMeditate').clone() );
 	}
@@ -520,12 +453,12 @@ function refreshPage() {
 
 		
 		//started text
-		cv.started_days = calcStartedDays(cv.started_date);		//freshen the started_days field (in case day changed since data loaded)
-		started_text = timeLapseDescriptor(cv.started_days);
+		started_days = calcStartedDays(cv.started_at);
+		started_text = timeLapseDescriptor(started_days);
 		
 		//review_cat_text
 		if (cv.review_cat == 'auto') {
-			review_cat_text = reviewText(autoReviewFreq(cv.started_days));
+			review_cat_text = reviewText(autoReviewFreq(started_days));
 		} else {
 			review_cat_text = '<font color=red>' + reviewText(cv.review_cat) + '</font>';
 		}
@@ -536,7 +469,7 @@ function refreshPage() {
 		$('#versebox_progress').html(context.current.n + '/' + verses.length);
 		$('#versebox_starteddate').html(started_text);
 		//set tool-tip for most browsers and on-click for iPhone - MAYBE DELETE LATER???
-		$('#versebox_starteddate').attr('title', cv.started_date);
+		$('#versebox_starteddate').attr('title', cv.started_at);
 	   $('#versebox_starteddate').unbind('click');
 	   $('#versebox_starteddate').click(function(event){ 
 		  	event.stopPropagation();
@@ -651,12 +584,12 @@ function formatTags(tags) {
 	return tagstring;
 }
 
-function calcStartedDays(started_date) {
+function calcStartedDays(started_at) {
 // 	var dtToday = new Date();
 	var dtToday = Date.fromString(new Date().asString('yyyy-mm-dd'), 'yyyy-mm-dd');
-	var dtStarted = Date.fromString(started_date, 'yyyy-mm-dd');
+	var dtStarted = Date.fromString(started_at, 'yyyy-mm-dd');
 // 	var dtStarted = Date.fromString('2009-01-01', 'yyyy-mm-dd');
-// 	alert(started_date);
+// 	alert(started_at);
 // 	alert(dtToday.asString());
 // 	alert(dtStarted.asString());
 	return Math.round( (dtToday-dtStarted) / (24*60*60*1000)); 
@@ -796,7 +729,6 @@ Loading - please wait...
       <li id="remindermeditate">Meditate Questions</li>
       <li id="reminderapply">Apply Questions</li>
       <li id="mainmenu">Main Menu</li>
-      <li id="logout">Logout</li>
     </ul>
 </div>
 <div class="contextMenu" id="myMenuFlashCards">
@@ -812,25 +744,13 @@ Loading - please wait...
 Loading - please wait...
 </div>
 
-<div id='tLogin'>
-<form name="Login" action="" method="get">
-<h1>Login</h1>
-UserID:<br>
-<input type='text' name='userid' /><br />
-<input value="Login" onclick=" login(); " type="submit">
-</form>
-</div>
-
 <div id='tMainMenu'>
 <h1>Main Menu</h1>
 <a href="javascript:void()" name="link" onclick=" selectRandomVerses(); startReview(); ">Start Review - Daily</a><br>
 <a href="javascript:void()" name="link" onclick=" selectAllVerses(); 	startReview(); ">Start Review - All</a><br>
 <a href="javascript:void()" name="link" onclick=" selectRandomVerses(); showVerseList(); ">Show Verse List - Daily</a><br>
 <a href="javascript:void()" name="link" onclick=" selectAllVerses(); 	showVerseList(); ">Show Verse List - All</a><br>
-<a href="javascript:void()" name="link" onclick=" dataLocalClear(); ">Clear Local</a><br>
-<a href="javascript:void()" name="link" onclick=" dataLocalSave(); ">Save Local</a><br>
-<a href="javascript:void()" name="link" onclick=" dataLocalLoad(); ">Load Local</a><br>
-<a href="javascript:void()" name="link" onclick=" dataRemoteLoad(); ">Load Remote</a><br>
+<a href="admin/verses">Verse Admin</a><br>
 </div>
 
 <div id='tVerseList'>
