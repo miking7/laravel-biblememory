@@ -585,13 +585,10 @@ function formatTags(tags) {
 }
 
 function calcStartedDays(started_at) {
-// 	var dtToday = new Date();
+    if (started_at == null) 
+        return 0;
 	var dtToday = Date.fromString(new Date().asString('yyyy-mm-dd'), 'yyyy-mm-dd');
 	var dtStarted = Date.fromString(started_at, 'yyyy-mm-dd');
-// 	var dtStarted = Date.fromString('2009-01-01', 'yyyy-mm-dd');
-// 	alert(started_at);
-// 	alert(dtToday.asString());
-// 	alert(dtStarted.asString());
 	return Math.round( (dtToday-dtStarted) / (24*60*60*1000)); 
 }
 
