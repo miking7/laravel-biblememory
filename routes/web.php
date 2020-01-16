@@ -14,10 +14,8 @@
 Auth::routes();
 
 Route::get('/', function () {
-    $verses = \App\Verse::all();
-    $verses = Auth::user()->verses;
-    return view('welcome', ['verses' => $verses]);
-})->middleware('auth');
+    return view('biblememory');
+});
 
 Route::get('/home', 'HomeController@index')->name('home');
 

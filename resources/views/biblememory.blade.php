@@ -5,20 +5,20 @@
 <title>Bible Memory</title>
 <link rel="apple-touch-icon" href="bible.png"/>
 <link rel="shortcut icon" href="bible.ico" />
-<link rel="stylesheet" href="index.css" type="text/css" />
+<link rel="stylesheet" href="css/index.css" type="text/css" />
 
 </head>
 
-<script language="javascript" type="text/javascript" src="jquery.js"></script>
-<script language="javascript" type="text/javascript" src="jquery.scrollTo-min.js"></script>
-<script language="javascript" type="text/javascript" src="jquery.contextmenu.r2.js"></script>
-<script language="javascript" type="text/javascript" src="jquery.shortkeys.js"></script>
-<script language="javascript" type="text/javascript" src="jquery.cookie.js"></script>
-<script language="javascript" type="text/javascript" src="jquery.date.min.js"></script>
-<script language="javascript" type="text/javascript" src="jquery.json.min.js"></script>
-<script language="javascript" type="text/javascript" src="jstorage.min.js"></script>
-<script language="javascript" type="text/javascript" src="jquery.tablesorter.js"></script>
-<script language="javascript" type="text/javascript" src="jquery.quicksearch.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery.scrollTo-min.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery.contextmenu.r2.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery.shortkeys.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery.cookie.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery.date.min.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery.json.min.js"></script>
+<script language="javascript" type="text/javascript" src="js/jstorage.min.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery.tablesorter.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery.quicksearch.js"></script>
 
 
 <script type="text/javascript">
@@ -131,11 +131,11 @@ context.setMode("loading");
 $(document).ready(function() {
 	//Browser-specific CSS insertion
 	if ((detectBrowser() == 'iphone') || (detectBrowser() == 'android')) {
-		$('head').append('<link rel="stylesheet" href="index.iphone.css" type="text/css" />');
+		$('head').append('<link rel="stylesheet" href="css/index.iphone.css" type="text/css" />');
 		$('head').append('<meta name = "viewport" content = "user-scalable=no,width=device-width" />');
 	}
 	if (detectBrowser() == 'msie')
-		$('head').append('<link rel="stylesheet" href="index.msie.css" type="text/css" />');
+		$('head').append('<link rel="stylesheet" href="css/index.msie.css" type="text/css" />');
 
 	
 	//Initialise shortcut keys
@@ -148,8 +148,8 @@ $(document).ready(function() {
 		's':          function () { dataLocalSave(); },
 		'l':          function () { dataLocalLoad(); },
 		'q':          function () { alert($.toJSON($.jStorage.get('context'))); },
-		'c':          function () { $('head').append('<link rel="stylesheet" href="index.iphone.css" type="text/css" />'); },
-		'v':          function () { $('head').append('<link rel="stylesheet" href="index.firefox.css" type="text/css" />'); }
+		'c':          function () { $('head').append('<link rel="stylesheet" href="css/index.iphone.css" type="text/css" />'); },
+		'v':          function () { $('head').append('<link rel="stylesheet" href="css/index.firefox.css" type="text/css" />'); }
 	});
 	//Login or load verses
 	if (getUserID() == null) {
@@ -195,7 +195,7 @@ function mobileBrowser() {
 
 
 function loadVerses() {
-	$.getJSON('json.php', {userid:getUserID()}, function(data) {
+	$.getJSON('http://brightangel7.com/biblememory/json.php', {userid:getUserID()}, function(data) {
 		allVerses = data;
 		for (var i=0; i<allVerses.length; i=i+1) {
 			var t = allVerses[i].content;
