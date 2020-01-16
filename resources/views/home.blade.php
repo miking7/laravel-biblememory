@@ -14,7 +14,12 @@
                         </div>
                     @endif
 
-                    You are logged in!
+                    <div class="links">
+                        @foreach ($verses as $verse)
+                            <p>{{ $verse->id }} {{ $verse->user_id }} {{ $verse->reference }}</p>
+                        @endforeach
+                    </div>
+
                 </div>
             </div>
         </div>

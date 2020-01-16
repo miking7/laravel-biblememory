@@ -11,12 +11,13 @@
 |
 */
 
+Auth::routes();
+
 Route::get('/', function () {
     $verses = \App\Verse::all();
+    $verses = Auth::user()->verses;
     return view('welcome', ['verses' => $verses]);
-});
-
-Auth::routes();
+})->middleware('auth');
 
 Route::get('/home', 'HomeController@index')->name('home');
 
