@@ -152,6 +152,11 @@ $(document).ready(function() {
 		'v':          function () { $('head').append('<link rel="stylesheet" href="css/index.firefox.css" type="text/css" />'); }
 	});
     context.setMode("mainmenu");
+	selectRandomVerses(); 
+	context.pushMode("verselist"); 
+	context.pushMode("review"); 
+	context.current.n = 1; // Counter
+	context.current.submode = 'reference';		//valid values are: reference, content, hints, firstletters
     refreshPage();
 });
 
