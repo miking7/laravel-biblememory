@@ -753,6 +753,8 @@ Loading - please wait...
 <a href="javascript:void()" name="link" onclick=" selectRandomVerses(); showVerseList(); ">Show Verse List - Daily</a><br>
 <a href="javascript:void()" name="link" onclick=" selectAllVerses(); 	showVerseList(); ">Show Verse List - All</a><br>
 <a href="admin/verses">Verse Admin</a><br>
+<a href="logout" name = "link" onclick=" event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+	<form id="logout-form" action="logout" method="POST" style="display: none;">@csrf</form>
 </div>
 
 <div id='tVerseList'>
