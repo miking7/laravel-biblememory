@@ -14,7 +14,9 @@
 Auth::routes();
 
 Route::get('/', function () {
-    $verses = Auth::user()->verses;
+    // $verses = Auth::user()->verses;
+    // $verses->sortByDesc('started_at');
+    $verses = Auth::user()->verses()->whereNotNull('started_at')->orderBy('started_at', 'desc')->get();
     return view('biblememory', ['verses' => $verses]);
 })->middleware('auth');
 
