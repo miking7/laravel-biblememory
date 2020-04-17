@@ -397,7 +397,7 @@ function refreshPage() {
 		for (var i=0; i<verses.length; i=i+1) {
 			var d = $('<div></div>');
 			var t = "<b>" + verses[i].reference + "</b> - " + verses[i].content;
-			d.html(t.substring(0,200));
+			d.html(t);
 			d.attr('title', i+1);
 		   d.click(function(event){ 
 				event.stopPropagation();
